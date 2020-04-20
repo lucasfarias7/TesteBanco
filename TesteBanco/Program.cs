@@ -13,7 +13,12 @@ namespace TesteBanco
         {
             FuncaoBanco func = new FuncaoBanco();
 
-            func.UpdateDatabase();
+         func.UpdateDatabase();
+            // func.GetAllDataBases();
+
+            // FuncaoBanco.GetDatabaseNames();
+
+            Console.ReadKey();
           
         }
     }

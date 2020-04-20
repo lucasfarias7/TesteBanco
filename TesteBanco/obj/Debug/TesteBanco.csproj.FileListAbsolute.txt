@@ -1,10 +1,10 @@
 C:\Users\LUCAS-INFOPUBLIC\source\repos\TesteBanco\TesteBanco\bin\Debug\TesteBanco.exe.config
 C:\Users\LUCAS-INFOPUBLIC\source\repos\TesteBanco\TesteBanco\bin\Debug\TesteBanco.exe
 C:\Users\LUCAS-INFOPUBLIC\source\repos\TesteBanco\TesteBanco\bin\Debug\TesteBanco.pdb
-C:\Users\LUCAS-INFOPUBLIC\source\repos\TesteBanco\TesteBanco\obj\Debug\TesteBanco.csprojAssemblyReference.cache
-C:\Users\LUCAS-INFOPUBLIC\source\repos\TesteBanco\TesteBanco\obj\Debug\TesteBanco.csproj.CoreCompileInputs.cache
-C:\Users\LUCAS-INFOPUBLIC\source\repos\TesteBanco\TesteBanco\obj\Debug\TesteBanco.exe
-C:\Users\LUCAS-INFOPUBLIC\source\repos\TesteBanco\TesteBanco\obj\Debug\TesteBanco.pdb
 C:\Users\LUCAS-INFOPUBLIC\source\repos\TesteBanco\TesteBanco\bin\Debug\Glimpse.AspNet.dll
 C:\Users\LUCAS-INFOPUBLIC\source\repos\TesteBanco\TesteBanco\bin\Debug\Glimpse.Core.dll
+C:\Users\LUCAS-INFOPUBLIC\source\repos\TesteBanco\TesteBanco\obj\Debug\TesteBanco.csproj.CoreCompileInputs.cache
 C:\Users\LUCAS-INFOPUBLIC\source\repos\TesteBanco\TesteBanco\obj\Debug\TesteBanco.csproj.CopyComplete
+C:\Users\LUCAS-INFOPUBLIC\source\repos\TesteBanco\TesteBanco\obj\Debug\TesteBanco.exe
+C:\Users\LUCAS-INFOPUBLIC\source\repos\TesteBanco\TesteBanco\obj\Debug\TesteBanco.pdb
+C:\Users\LUCAS-INFOPUBLIC\source\repos\TesteBanco\TesteBanco\obj\Debug\TesteBanco.csprojAssemblyReference.cache
