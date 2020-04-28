@@ -15,7 +15,7 @@ namespace TesteBanco.Funcao
     public class FuncaoBanco
     {
        /* @concorrencia
-		public void atualizaVersao
+		public void atualizaVersao()
 		{
 			if controleVersao.numero == 1 { 
 				arquivo = lerAqruivoAtualizacao .SQL _1
@@ -40,80 +40,86 @@ namespace TesteBanco.Funcao
 
 		}
 		*/
-		public void UpdateDatabase()
-        {
-			List<string> listaBancos = new List<string>();
+	public static void UpdateDatabaseEntities()
+    {
+		List<string> listaBancos = new List<string>();
 
-			//string de conexao
-			string ConexaoString = @"Data Source=DESKTOP-11CCP3D\SQLEXPRESS;Integrated Security=True;MultipleActiveResultSets=true;";
+		//string de conexao
+		string ConexaoString = @"Data Source=DESKTOP-11CCP3D\SQLEXPRESS;Integrated Security=True;MultipleActiveResultSets=true;";
 
-				//Passando a string de conexao
-				using (SqlConnection conn = new SqlConnection(ConexaoString))
+		//Passando a string de conexao
+		using (SqlConnection conn = new SqlConnection(ConexaoString))
+		{
+					
+				//abrindo a conexao
+				conn.Open();
+
+				string selectBanco = "SELECT name from sys.databases where name LIKE 'Teste%'";
+
+				using (SqlCommand cmd = new SqlCommand(selectBanco, conn))
 				{
-					try
+
+					using (SqlDataReader rdr = cmd.ExecuteReader())
 					{
-						//abrindo a conexao
-						conn.Open();
 
-						string selectBanco = "SELECT name from sys.databases where name LIKE 'Teste%'";
-
-						using (SqlCommand cmd = new SqlCommand(selectBanco, conn))
+						while (rdr.Read())
 						{
-							
-							using (SqlDataReader rdr = cmd.ExecuteReader())
-							{
-
-								while (rdr.Read())
-								{
-									listaBancos.Add(rdr[0].ToString());		
-								}
-
-							}		
-
+							listaBancos.Add(rdr[0].ToString());		
 						}
 
-						//caminho do arquivo .sql
-						string caminho = @"C:\Arqu\Atualizacao_02.sql";
-						//recupero o conteudo do arquivo .sql
-						string script = File.ReadAllText(caminho);
+					}		
 
-						//uma lista para ser executado o comando a partir do go
-						IEnumerable<string> commandoStrings = Regex.Split(script, @"^\s*GO\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
-
-						// percorro toda a lista e executo a instrução que ali estiver em cada sequencia. 
-						foreach (string commando in commandoStrings)
-						{			
-								//o metodo trim ele serve para tirar espaços em branco que estiver em sua string e             deixar juntos.
-								if (commando.Trim() != "")
-								{
-							       for(int i=0; i<listaBancos.Count; i++)
-									{
-										SqlCommand sql = conn.CreateCommand();
-										sql.CommandText = "USE [" + listaBancos[i] + "]";
-										sql.ExecuteNonQuery();
-										sql.CommandText = commando;
-										sql.ExecuteNonQuery();
-									}
-																							
-								}
-							
-						}
-						
-					Console.WriteLine("Banco de dados atualizado com sucesso!!");
-					}
-					catch (SqlException er)
-					{
-						//mostro alguma mensagem de erro caso venha a falhar essa conexao, ou que venha falhar com o arquivo .sql passado.
-						Console.WriteLine(er.Message);
-					}
-					finally
-					{
-						//fecho a conexao com o banco usando o close.
-						conn.Close();
-					    conn.Dispose();
-					}
 				}
-        }
+
+				SqlTransaction tran = conn.BeginTransaction();
+					
+				try
+				{
+					//caminho do arquivo .sql
+					string caminho = @"C:\Arqu\Atualizacao_02.sql";
+					//recupero o conteudo do arquivo .sql
+					string script = File.ReadAllText(caminho);
+
+					//Separando em uma lista o que tiver com instruções a cada 'GO'
+					IEnumerable<string> commandoStrings = Regex.Split(script, @"^\s*GO\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+
+						
+					//percorro toda a lista e executo a instrução que ali estiver em cada sequencia. 
+					foreach (string commando in commandoStrings)
+					{			
+						//o metodo trim ele serve para tirar espaços em branco que estiver em sua string e deixar juntos.
+						if (commando.Trim() != "")
+						{
+							  for(int i=0; i<listaBancos.Count; i++)
+							  {
+								   SqlCommand sql = conn.CreateCommand();
+								   sql.Transaction = tran;
+								   sql.CommandText = "USE [" + listaBancos[i] + "]";
+								   sql.ExecuteNonQuery();
+								   sql.CommandText = commando;
+								   sql.ExecuteNonQuery();
+							  }
+																							
+						}
+							
+					}
+				tran.Commit();
+				Console.WriteLine("Banco de dados atualizado com sucesso!!");
+				}
+				catch (SqlException er)
+				{
+					tran.Rollback();
+					//mostro alguma mensagem de erro caso venha a falhar essa conexao, ou que venha falhar com o arquivo .sql passado.
+					Console.WriteLine(er.Message);
+				}
+				finally
+				{
+					//fecho a conexao com o banco usando o close.
+					conn.Close();
+					conn.Dispose();
+				}
+		}
+     }
 
 		public List<string> GetAllDataBases()
 		{
@@ -162,6 +168,33 @@ namespace TesteBanco.Funcao
 			}
 
 			return databases.ToArray();
+		}
+
+		public static List<string> gGetAllDataBases()
+		{
+			List<string> list = new List<string>();
+
+			string ConexaoString = @"Data Source=64.37.58.162,1598;Integrated Security=False;User ID=SIGP-Entidade;Password=5q8b>S!1ORsgcmC;";
+
+			using (SqlConnection conn = new SqlConnection(ConexaoString))
+			{
+				conn.Open();
+
+				string select = "SELECT name from sys.databases where name LIKE '2%'";
+
+				using (SqlCommand cmd = new SqlCommand(select, conn))
+				{
+					using (SqlDataReader rdr = cmd.ExecuteReader())
+					{
+						while (rdr.Read())
+						{
+							list.Add(rdr[0].ToString());
+						}
+					}
+				}
+			}
+
+			return list;
 		}
 	}
 }
