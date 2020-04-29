@@ -9,12 +9,36 @@ using System.Text.RegularExpressions;
 using System.Web;
 using Glimpse.AspNet.Tab;
 using System.Data;
+using TesteBanco.Data;
+using TesteBanco.Entities;
 
 namespace TesteBanco.Funcao
 {
     public class FuncaoBanco
     {
-       /* @concorrencia
+
+		public static void AtualizarVersao()
+		{
+			DataContext db = new DataContext();
+
+			Versao versao = db.versao.Find(3);
+
+			if(versao != null)
+			{
+				UpdateDatabaseEntities();
+
+				Versao versaoo = new Versao()
+				{
+					numero = versao.numero + 1
+				};
+
+				db.versao.Add(versaoo);
+			}
+			
+			db.SaveChanges();
+		}
+
+       /* 
 		public void atualizaVersao()
 		{
 			if controleVersao.numero == 1 { 
