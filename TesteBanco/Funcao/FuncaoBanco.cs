@@ -21,50 +21,35 @@ namespace TesteBanco.Funcao
 		{
 			DataContext db = new DataContext();
 
-			Versao versao = db.versao.Find(3);
+			Versao versao = db.versao.Find(1);
 
-			if(versao != null)
+			if (versao.numero == 1)
 			{
-				UpdateDatabaseEntities();
+				//caminho do arquivo .sql
+				string caminho = @"C:\Arqu\Atualizacao_01.sql";
 
-				Versao versaoo = new Versao()
+				if (UpdateDatabaseEntities(caminho))
 				{
-					numero = versao.numero + 1
-				};
-
-				db.versao.Add(versaoo);
+					versao.numero += 1;
+				}
 			}
-			
+
+			else if (versao.numero == 2)
+			{
+				//caminho do arquivo .sql
+				string caminho = @"C:\Arqu\Atualizacao_02.sql";
+
+				if (UpdateDatabaseEntities(caminho))
+				{
+				     versao.numero += 1;
+				}
+			}
+
 			db.SaveChanges();
 		}
 
-       /* 
-		public void atualizaVersao()
-		{
-			if controleVersao.numero == 1 { 
-				arquivo = lerAqruivoAtualizacao .SQL _1
-
-				UpdateDatabase(arqivo);
-
-				controleVersao = 2;
-
-
-			}
-
-			if controleVersao.numero == 2 {
-				arquivo = lerAqruivoAtualizacao.SQL _2
-
-				UpdateDatabase(arqivo);
-
-				controleVersao = 3;
-
-
-			}
-
-
-		}
-		*/
-	public static void UpdateDatabaseEntities()
+      
+	public static bool UpdateDatabaseEntities(string caminho)
     {
 		List<string> listaBancos = new List<string>();
 
@@ -99,8 +84,6 @@ namespace TesteBanco.Funcao
 					
 				try
 				{
-					//caminho do arquivo .sql
-					string caminho = @"C:\Arqu\Atualizacao_02.sql";
 					//recupero o conteudo do arquivo .sql
 					string script = File.ReadAllText(caminho);
 
@@ -127,14 +110,21 @@ namespace TesteBanco.Funcao
 						}
 							
 					}
-				tran.Commit();
-				Console.WriteLine("Banco de dados atualizado com sucesso!!");
+
+					tran.Commit();
+
+					Console.WriteLine("Banco de dados atualizado com sucesso!!");
+
+					return true;
+					
 				}
 				catch (SqlException er)
 				{
 					tran.Rollback();
 					//mostro alguma mensagem de erro caso venha a falhar essa conexao, ou que venha falhar com o arquivo .sql passado.
 					Console.WriteLine(er.Message);
+
+					return false;
 				}
 				finally
 				{
@@ -144,6 +134,11 @@ namespace TesteBanco.Funcao
 				}
 		}
      }
+
+
+
+
+
 
 		public List<string> GetAllDataBases()
 		{
@@ -220,5 +215,32 @@ namespace TesteBanco.Funcao
 
 			return list;
 		}
+
+		/* 
+	   public void atualizaVersao()
+	   {
+		   if controleVersao.numero == 1 { 
+			   arquivo = lerAqruivoAtualizacao .SQL _1
+
+			   UpdateDatabase(arqivo);
+
+			   controleVersao = 2;
+
+
+		   }
+
+		   if controleVersao.numero == 2 {
+			   arquivo = lerAqruivoAtualizacao.SQL _2
+
+			   UpdateDatabase(arqivo);
+
+			   controleVersao = 3;
+
+
+		   }
+
+
+	   }
+	   */
 	}
 }

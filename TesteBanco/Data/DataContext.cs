@@ -11,7 +11,7 @@ namespace TesteBanco.Data
     public class DataContext : DbContext
     {
 
-        static private string ConexaoString = @"Data Source=DESKTOP-11CCP3D\SQLEXPRESS;Initial Catalog=Teste3;Integrated Security=True;";
+        static private string ConexaoString = @"Data Source=DESKTOP-11CCP3D\SQLEXPRESS;Initial Catalog=Teste;Integrated Security=True;";
 
 
         public DataContext() : base(ConexaoString)
