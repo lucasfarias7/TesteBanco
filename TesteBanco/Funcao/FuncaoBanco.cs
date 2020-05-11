@@ -11,41 +11,69 @@ using Glimpse.AspNet.Tab;
 using System.Data;
 using TesteBanco.Data;
 using TesteBanco.Entities;
+using System.Threading;
+using System.Runtime.CompilerServices;
 
 namespace TesteBanco.Funcao
 {
     public class FuncaoBanco
     {
+		
+		private static readonly object locked = new object();
 
 		public static void AtualizarVersao()
 		{
-			DataContext db = new DataContext();
-
-			Versao versao = db.versao.Find(1);
-
-			if (versao.numero == 1)
+			bool concluido = false;
+			
+			lock (locked)
 			{
-				//caminho do arquivo .sql
-				string caminho = @"C:\Arqu\Atualizacao_01.sql";
-
-				if (UpdateDatabaseEntities(caminho))
+				try
 				{
-					versao.numero += 1;
+					if (!concluido)
+					{
+						Monitor.Enter(locked);
+
+						DataContext db = new DataContext();
+
+						Versao versao = db.versao.Find(1);
+
+						if (versao.numero == 1)
+						{
+							//caminho do arquivo .sql
+							string caminho = @"C:\Arqu\Atualizacao_01.sql";
+
+							if (UpdateDatabaseEntities(caminho))
+							{
+								versao.numero += 1;
+							}
+						}
+
+						else if (versao.numero == 2)
+						{
+							//caminho do arquivo .sql
+							string caminho = @"C:\Arqu\Atualizacao_02.sql";
+
+							if (UpdateDatabaseEntities(caminho))
+							{
+								versao.numero += 1;
+							}
+						}
+
+						db.SaveChanges();
+
+						concluido = true;
+					}
+					
+				}
+				finally
+				{
+					if (concluido)
+					{
+						Monitor.Exit(locked);
+					}
 				}
 			}
-
-			else if (versao.numero == 2)
-			{
-				//caminho do arquivo .sql
-				string caminho = @"C:\Arqu\Atualizacao_02.sql";
-
-				if (UpdateDatabaseEntities(caminho))
-				{
-				     versao.numero += 1;
-				}
-			}
-
-			db.SaveChanges();
+			
 		}
 
       
@@ -61,7 +89,7 @@ namespace TesteBanco.Funcao
 		{
 					
 				//abrindo a conexao
-				conn.Open();
+				 conn.Open();
 
 				string selectBanco = "SELECT name from sys.databases where name LIKE 'Teste%'";
 
