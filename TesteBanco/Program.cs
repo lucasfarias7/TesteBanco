@@ -25,14 +25,21 @@ namespace TesteBanco
         {
 
             //  DataContext db = new DataContext();
-             
+
             //var result = DownloaddHtml();
             //Console.WriteLine(result);
-            Console.WriteLine("OI");
-            Thread.Sleep(5000);
-            Task.Run(() => FuncaoBanco.AtualizarVersao());
+            //Console.WriteLine("OI");
+            //Thread.Sleep(5000);
+            //Console.WriteLine();
+            //Task.Run(() => FuncaoBanco.AtualizarVersao());
             //FuncaoBanco.AtualizarVersao();
             //Task.Run(() => FuncaoBanco.AtualizarVersao());
+            Task.Run(() => FuncaoBanco.UpdateDatabaseEntities(@"C:\Arqu\Atualizacao_01.sql"));
+
+
+
+
+
 
 
 

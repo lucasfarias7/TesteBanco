@@ -19,19 +19,23 @@ namespace TesteBanco.Funcao
     public class FuncaoBanco
     {
 		
-		private static readonly object locked = new object();
+		private static readonly object thislock = new object();
 
 		public static void AtualizarVersao()
 		{
 			bool concluido = false;
-			
-			lock (locked)
+
+			if (!concluido)
 			{
+				
+			  lock (thislock)
+			  {
+					Thread.Sleep(100);
 				try
 				{
 					if (!concluido)
 					{
-						Monitor.Enter(locked);
+						Monitor.Enter(thislock);
 
 						DataContext db = new DataContext();
 
@@ -69,11 +73,12 @@ namespace TesteBanco.Funcao
 				{
 					if (concluido)
 					{
-						Monitor.Exit(locked);
+						Monitor.Exit(thislock);
 					}
 				}
+			  }
 			}
-			
+
 		}
 
       
@@ -82,7 +87,7 @@ namespace TesteBanco.Funcao
 		List<string> listaBancos = new List<string>();
 
 		//string de conexao
-		string ConexaoString = @"Data Source=DESKTOP-11CCP3D\SQLEXPRESS;Integrated Security=True;MultipleActiveResultSets=true;";
+		string ConexaoString = @"Data Source=64.37.58.162,1598;User id=SIGP-Entidade;Password=5q8b>S!1ORsgcmC;Integrated Security=False;MultipleActiveResultSets=true;Connect Timeout=15;";
 
 		//Passando a string de conexao
 		using (SqlConnection conn = new SqlConnection(ConexaoString))
@@ -91,7 +96,7 @@ namespace TesteBanco.Funcao
 				//abrindo a conexao
 				 conn.Open();
 
-				string selectBanco = "SELECT name from sys.databases where name LIKE 'Teste%'";
+				string selectBanco = "SELECT name from sys.databases where name LIKE '2%'";
 
 				using (SqlCommand cmd = new SqlCommand(selectBanco, conn))
 				{
@@ -119,12 +124,13 @@ namespace TesteBanco.Funcao
 					IEnumerable<string> commandoStrings = Regex.Split(script, @"^\s*GO\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
 
 						
-					//percorro toda a lista e executo a instrução que ali estiver em cada sequencia. 
+					//Para cada comando contido na minha lista commandoStrings, faça
 					foreach (string commando in commandoStrings)
 					{			
 						//o metodo trim ele serve para tirar espaços em branco que estiver em sua string e deixar juntos.
 						if (commando.Trim() != "")
 						{
+							//Percorrendo toda os bancos de dados que estiver na lista listaBancos.
 							  for(int i=0; i<listaBancos.Count; i++)
 							  {
 								   SqlCommand sql = conn.CreateCommand();
@@ -138,7 +144,7 @@ namespace TesteBanco.Funcao
 						}
 							
 					}
-
+					//persiste a instrução no banco de dados se nada der errado.
 					tran.Commit();
 
 					Console.WriteLine("Banco de dados atualizado com sucesso!!");
@@ -148,6 +154,7 @@ namespace TesteBanco.Funcao
 				}
 				catch (SqlException er)
 				{
+					//Desfaz tudo que foi ja tenha sido feito, se algo deu errado
 					tran.Rollback();
 					//mostro alguma mensagem de erro caso venha a falhar essa conexao, ou que venha falhar com o arquivo .sql passado.
 					Console.WriteLine(er.Message);

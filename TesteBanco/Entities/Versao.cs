@@ -13,7 +13,7 @@ namespace TesteBanco.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public int id { get; set; }
 
         public int numero { get; set; }
     }
